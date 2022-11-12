@@ -13,8 +13,11 @@ Handles only A type records.
 import codecs
 import sys
 import socket
+import json
+import os
 import bitstring, struct # For constructing and destructing the DNS packet.
 
+DNS_IP_DEFAULT = "8.8.8.8"
 
 def to_hex_string(x):
   """
@@ -38,10 +41,19 @@ def to_hex_string(x):
   return "0x" + result
 
 
-def resolve_host_name(host_name_to):
+def resolve_host_name(host_name_to, DNS_IP):
   """
   Queries the DNS A record for the given host name and returns the result.
   """
+  cache = {}
+
+  with open("cache.json", 'r') as f:
+    cache = json.loads(f.read())
+    if host_name_to in cache:
+      result = {'host_name': host_name_to, 'ip_address': cache[host_name_to]}
+      print("Fetched from cache!")
+      return result
+
 
   host_name_to = host_name_to.split(".")
 
@@ -110,7 +122,11 @@ def resolve_host_name(host_name_to):
 
   # Send the packet off to the server.
 
-  DNS_IP = "127.0.0.1" # Google public DNS server IP.
+  if DNS_IP == None:
+    print("Fetching from Google Public DNS Server")
+    DNS_IP = DNS_IP_DEFAULT
+  else:
+    print("Fetching from "+DNS_IP)
   DNS_PORT = 53 # DNS server port for queries.
 
   READ_BUFFER = 1024 # The size of the buffer to read in the received UDP packet.
@@ -214,6 +230,10 @@ def resolve_host_name(host_name_to):
 
     print("\nServer refused query.\n")
 
+  os.remove("cache.json")
+  cache[result["host_name"]] = result["ip_address"]
+  with open("cache.json", 'w') as f:
+      json.dump(cache, f)
   return result
 
 
@@ -222,18 +242,18 @@ if __name__ == "__main__":
   # Get the host name from the command line.
 
   HOST_NAME = ""
+  IP_ADDR = ""
 
   try:
-
     HOST_NAME = sys.argv[1]
-
   except IndexError:
-
     print("No host name specified.")
-
     sys.exit(0)
 
-  result = resolve_host_name(HOST_NAME)
-
+  try:
+    IP_ADDR = sys.argv[2]
+  except IndexError:
+    IP_ADDR = None
+  result = resolve_host_name(HOST_NAME, IP_ADDR)
   print("\nHost Name:\n" + str(result['host_name']))
   print("\nIP Address:\n" + str(result['ip_address']) + "\n")

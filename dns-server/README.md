@@ -1,5 +1,4 @@
 # DNS Server
-<img src="https://hide.me/resources/156/images/no-dns-icon@2x.png" width="100" height="100">
 
 A Domain Name Server that allows you to use your own domain name IP address mappings.
 This could be used within private networks to simplify sharing of resources within the network.
@@ -14,9 +13,8 @@ To use the server there are 2 basic steps to follow:
 You must first generate a zone file. This is the file that stores the domain name and it's IP address mapping.
 To generate a zone file you must create a file with the following filename format: [domain name in reverse order].zone.
 Examples:
-- The zone file for www.google.com will be google.com.zone
-- The zone file for www.bing.co.uk will be bing.co.uk.zone
-- The zone file for www.university.ac.co will be university.ac.co.zone
+- The zone file for www.xyz.com will be xyz.com.zone
+- The zone file for www.abc.co.uk will be abc.com.zone
 
 **Ensure the file has a '.zone' extension rather than .txt or any other extension**
 
@@ -56,13 +54,4 @@ You can change the IP address '127.0.0.1' to the IP address where the DNS server
 on a remote machine on the network.
 
 **Note:** if you have updated your network configurations to use a specific IP for
-the dns server then there is no need to include the '@127.0.0.1' portion in the command.
-
-# Run tests
-
-If you make any modifications to the code you can run tests by navigating 
-to the project directory (i.e. 'DNS Server') and then run following command:
-
-```sh
-$ python3 -m unittest
-```
+the dns server then there is no need to include the '127.0.0.1' portion in the command.

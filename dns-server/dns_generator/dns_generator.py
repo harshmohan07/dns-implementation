@@ -16,13 +16,11 @@ def load_zones():
         files = os.listdir(zones_path)
     except FileNotFoundError:
         zones_path = "..\Zones"
-        print(zones_path)
         files = os.listdir(zones_path)
     for zone_file in os.listdir(zones_path):
         with open(os.path.join(zones_path, zone_file), "r") as f:
             data = json.load(f)
             zone_name = data["$origin"]
-            print(data)
             json_zone[zone_name] = data
     return json_zone
 ZONES = load_zones()
@@ -34,7 +32,6 @@ def get_zone(domain):
         zone = {}
         try:
             zone = ZONES[zone_name]
-            print(zone)
         except KeyError:
             return None
         return zone
@@ -103,11 +100,9 @@ class DNSGen(object):
         except IndexError:
             self.format_error = 1
         finally:
-            print(domain_parts, question_type)
             return domain_parts, question_type
 
     def _get_records(self, data):
-        print(data)
         domain, question_type = self._get_question_domain_type(data)
         if question_type is None and len(domain) == 0:
             return {}, "", ""
@@ -136,7 +131,6 @@ class DNSGen(object):
 
     def _make_header(self, records_length):
         transaction_id = self._get_transaction_id()
-        print(transaction_id)
         ancount = records_length.to_bytes(2, byteorder="big")
         if self.format_error == 1:
             self.RCODE = "0001"  # Format error
@@ -169,7 +163,6 @@ class DNSGen(object):
         return resp
 
     def make_response(self):
-        print(self.data)
         records, record_type, domain_name = self._get_records(self.data[12:])
         return self._make_header(len(records)) + self._make_question(len(records), record_type, domain_name) +\
                self._make_answer(records, record_type, domain_name)
