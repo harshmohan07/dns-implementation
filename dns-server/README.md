@@ -14,7 +14,7 @@ You must first generate a zone file. This is the file that stores the domain nam
 To generate a zone file you must create a file with the following filename format: [domain name in reverse order].zone.
 Examples:
 - The zone file for www.xyz.com will be xyz.com.zone
-- The zone file for www.abc.co.uk will be abc.com.zone
+- The zone file for www.abc.com will be abc.com.zone
 
 **Ensure the file has a '.zone' extension rather than .txt or any other extension**
 
